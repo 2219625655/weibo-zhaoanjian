@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>微博 - 个人主页</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #f2f2f2;
+      color: #333;
+      line-height: 1.5;
+    }
+
+    /* 顶部导航 */
+    .navbar {
+      background: #fff;
+      border-bottom: 1px solid #e6e6e6;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .navbar-inner {
+      max-width: 980px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      height: 56px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 22px;
+      font-weight: 700;
+      color: #ff8200;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: #ff8200;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 18px;
+    }
+
+    .nav-search {
+      flex: 1;
+      max-width: 400px;
+      margin: 0 40px;
+    }
+
+    .nav-search input {
+      width: 100%;
+      padding: 8px 16px;
+      border: 1px solid #e6e6e6;
+      border-radius: 20px;
+      background: #f7f7f7;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .nav-search input:focus {
+      border-color: #ff8200;
+      background: #fff;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .nav-links a {
+      color: #666;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .nav-links a:hover {
+      color: #ff8200;
+    }
+
+    /* 主容器 */
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* 个人资料卡片 */
+    .profile-card {
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .profile-cover {
+      height: 200px;
+      background: linear-gradient(135deg, #ff8200 0%, #ff6b35 50%, #ffa726 100%);
+      position: relative;
+    }
+
+    .profile-cover::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.1));
+    }
+
+    .profile-info {
+      padding: 0 24px 24px;
+      position: relative;
+    }
+
+    .profile-avatar-wrap {
+      margin-top: -50px;
+      margin-bottom: 12px;
+    }
+
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 4px solid #fff;
+      background: #1c1c1e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      color: #fff;
+      font-weight: 600;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+      overflow: hidden;
+    }
+
+    .profile-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .profile-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .profile-name {
+      font-size: 22px;
+      font-weight: 700;
+      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .verified-badge {
+      background: #ff8200;
+      color: #fff;
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-weight: 500;
+    }
+
+    .profile-id {
+      color: #939393;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    .profile-bio {
+      margin-top: 12px;
+      font-size: 14px;
+      color: #666;
+      max-width: 600px;
+    }
+
+    .profile-meta {
+      display: flex;
+      gap: 20px;
+      margin-top: 12px;
+      font-size: 13px;
+      color: #939393;
+    }
+
+    .profile-meta span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .profile-stats {
+      display: flex;
+      gap: 32px;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid #f0f0f0;
+    }
+
+    .stat-item {
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .stat-item:hover .stat-num {
+      color: #ff8200;
+    }
+
+    .stat-num {
+      font-size: 18px;
+      font-weight: 700;
+      color: #333;
+      transition: color 0.2s;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: #939393;
+      margin-top: 2px;
+    }
+
+    .btn-follow {
+      padding: 8px 28px;
+      background: #ff8200;
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+
+    .btn-follow:hover {
+      background: #e67300;
+    }
+
+    .btn-follow.following {
+      background: #fff;
+      color: #666;
+      border: 1px solid #ccc;
+    }
+
+    /* 标签页 */
+    .profile-tabs {
+      background: #fff;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      display: flex;
+      border-bottom: 1px solid #f0f0f0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .tab-item {
+      padding: 16px 24px;
+      font-size: 15px;
+      color: #666;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.2s;
+    }
+
+    .tab-item:hover {
+      color: #ff8200;
+    }
+
+    .tab-item.active {
+      color: #ff8200;
+      font-weight: 600;
+    }
+
+    .tab-item.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 3px;
+      background: #ff8200;
+      border-radius: 2px;
+    }
+
+    /* 微博列表 */
+    .weibo-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .weibo-item {
+      background: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      transition: box-shadow 0.2s;
+    }
+
+    .weibo-item:hover {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .weibo-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .weibo-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #1c1c1e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 600;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .weibo-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .weibo-user-info {
+      flex: 1;
+    }
+
+    .weibo-username {
+      font-size: 15px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .weibo-time {
+      font-size: 12px;
+      color: #939393;
+      margin-top: 2px;
+    }
+
+    .weibo-source {
+      color: #939393;
+    }
+
+    .weibo-content {
+      font-size: 15px;
+      color: #333;
+      line-height: 1.7;
+      margin-bottom: 12px;
+      word-break: break-word;
+    }
+
+    .weibo-content .topic {
+      color: #ff8200;
+      cursor: pointer;
+    }
+
+    .weibo-content .mention {
+      color: #ff8200;
+      cursor: pointer;
+    }
+
+    .weibo-images {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      overflow: hidden;
+      max-width: 500px;
+    }
+
+    .weibo-images.single {
+      grid-template-columns: 1fr;
+      max-width: 360px;
+    }
+
+    .weibo-images.double {
+      grid-template-columns: repeat(2, 1fr);
+      max-width: 400px;
+    }
+
+    .weibo-image {
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, #e0e0e0, #f5f5f5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #bbb;
+      font-size: 24px;
+      cursor: zoom-in;
+      transition: opacity 0.2s, transform 0.2s;
+      overflow: hidden;
+      border: none;
+      padding: 0;
+    }
+
+    .weibo-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      pointer-events: none;
+    }
+
+    .weibo-image:hover {
+      opacity: 0.92;
+      transform: scale(1.02);
+    }
+
+    .weibo-image.img-1 { background: linear-gradient(135deg, #667eea33, #764ba233); }
+    .weibo-image.img-2 { background: linear-gradient(135deg, #f093fb33, #f5576c33); }
+    .weibo-image.img-3 { background: linear-gradient(135deg, #4facfe33, #00f2fe33); }
+    .weibo-image.img-4 { background: linear-gradient(135deg, #43e97b33, #38f9d733); }
+    .weibo-image.img-5 { background: linear-gradient(135deg, #fa709a33, #fee14033); }
+    .weibo-image.img-6 { background: linear-gradient(135deg, #a18cd133, #fbc2eb33); }
+
+    /* 图片预览灯箱 */
+    .image-viewer {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0, 0, 0, 0.88);
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .image-viewer.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .viewer-content {
+      position: relative;
+      max-width: 90vw;
+      max-height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .viewer-content img {
+      max-width: 90vw;
+      max-height: 85vh;
+      object-fit: contain;
+      border-radius: 4px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      user-select: none;
+    }
+
+    .viewer-close {
+      position: fixed;
+      top: 20px;
+      right: 24px;
+      width: 44px;
+      height: 44px;
+      border: none;
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      font-size: 28px;
+      line-height: 1;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background 0.2s;
+      z-index: 1001;
+    }
+
+    .viewer-close:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .viewer-nav {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 48px;
+      height: 48px;
+      border: none;
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      font-size: 24px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background 0.2s;
+      z-index: 1001;
+    }
+
+    .viewer-nav:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .viewer-nav:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .viewer-prev { left: 24px; }
+    .viewer-next { right: 24px; }
+
+    .viewer-counter {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 14px;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 6px 16px;
+      border-radius: 20px;
+      z-index: 1001;
+    }
+
+    .viewer-backdrop {
+      position: absolute;
+      inset: 0;
+      cursor: zoom-out;
+      z-index: 0;
+    }
+
+    .viewer-content,
+    .viewer-close,
+    .viewer-nav,
+    .viewer-counter {
+      z-index: 1;
+    }
+
+    .weibo-actions {
+      display: flex;
+      gap: 48px;
+      padding-top: 12px;
+      border-top: 1px solid #f5f5f5;
+    }
+
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #939393;
+      font-size: 13px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px 0;
+      transition: color 0.2s;
+    }
+
+    .action-btn:hover {
+      color: #ff8200;
+    }
+
+    .action-btn.liked {
+      color: #ff8200;
+    }
+
+    .action-icon {
+      font-size: 16px;
+    }
+
+    /* 转发微博样式 */
+    .weibo-retweet {
+      background: #f7f7f7;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .weibo-retweet .weibo-content {
+      font-size: 14px;
+      margin-bottom: 0;
+    }
+
+    .weibo-retweet-user {
+      color: #ff8200;
+      font-weight: 500;
+    }
+
+    /* 侧边栏（可选） */
+    .main-layout {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 16px;
+    }
+
+    .sidebar-card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      margin-bottom: 12px;
+    }
+
+    .sidebar-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .hot-topic {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .hot-topic:hover .topic-name {
+      color: #ff8200;
+    }
+
+    .topic-name {
+      color: #333;
+      transition: color 0.2s;
+    }
+
+    .topic-hot {
+      color: #939393;
+      font-size: 12px;
+    }
+
+    .topic-rank {
+      color: #ff8200;
+      font-weight: 600;
+      margin-right: 8px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 768px) {
+      .main-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .nav-search {
+        display: none;
+      }
+
+      .profile-stats {
+        gap: 20px;
+      }
+
+      .weibo-actions {
+        gap: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 顶部导航 -->
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a href="#" class="logo">
+        <div class="logo-icon">微</div>
+        微博
+      </a>
+      <div class="nav-search">
+        <input type="text" placeholder="搜索微博、用户">
+      </div>
+      <div class="nav-links">
+        <a href="#">首页</a>
+        <a href="#">消息</a>
+        <a href="#">发现</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- 个人资料 -->
+    <div class="profile-card">
+      <div class="profile-cover"></div>
+      <div class="profile-info">
+        <div class="profile-avatar-wrap">
+          <div class="profile-avatar" id="profileAvatar">
+            <img src="avatar.jpg" alt="赵安见">
+          </div>
+        </div>
+        <div class="profile-header">
+          <div>
+            <div class="profile-name">
+              <span id="profileName">赵安见</span>
+              <span class="verified-badge">V</span>
+            </div>
+            <div class="profile-id" id="profileId">@zhaoanjian · 微博个人认证：智能工程领域博主</div>
+            <p class="profile-bio" id="profileBio">
+              🤖 专注智能工程 · 人工智能 · 工业自动化 · 物联网 | 分享技术前沿与工程实践 | 合作交流请私信 ✉️
+            </p>
+            <div class="profile-meta">
+              <span>👤 男</span>
+              <span>📍 上海</span>
+              <span>🔗 smart-engineering.cn</span>
+              <span>📅 2019年6月 加入微博</span>
+            </div>
+            <div class="profile-stats">
+              <div class="stat-item">
+                <div class="stat-num" id="statWeibo">328</div>
+                <div class="stat-label">微博</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-num" id="statFollowing">156</div>
+                <div class="stat-label">关注</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-num" id="statFollowers">12.8万</div>
+                <div class="stat-label">粉丝</div>
+              </div>
+            </div>
+          </div>
+          <button class="btn-follow" id="followBtn" onclick="toggleFollow()">+ 关注</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 标签页 -->
+    <div class="profile-tabs">
+      <div class="tab-item active">微博</div>
+      <div class="tab-item">相册</div>
+      <div class="tab-item">赞</div>
+      <div class="tab-item">更多</div>
+    </div>
+
+    <div class="main-layout">
+      <!-- 微博内容区 -->
+      <div class="weibo-list" id="weiboList"></div>
+
+      <!-- 侧边栏 -->
+      <div class="sidebar">
+        <div class="sidebar-card">
+          <div class="sidebar-title">🔥 微博热搜</div>
+          <div class="hot-topic">
+            <span><span class="topic-rank">1</span><span class="topic-name">#人工智能大模型#</span></span>
+            <span class="topic-hot">1256万</span>
+          </div>
+          <div class="hot-topic">
+            <span><span class="topic-rank">2</span><span class="topic-name">#智能制造#</span></span>
+            <span class="topic-hot">892万</span>
+          </div>
+          <div class="hot-topic">
+            <span><span class="topic-rank">3</span><span class="topic-name">#工业物联网#</span></span>
+            <span class="topic-hot">567万</span>
+          </div>
+          <div class="hot-topic">
+            <span><span class="topic-rank">4</span><span class="topic-name">#数字孪生#</span></span>
+            <span class="topic-hot">423万</span>
+          </div>
+          <div class="hot-topic">
+            <span><span class="topic-rank">5</span><span class="topic-name">#智能工程#</span></span>
+            <span class="topic-hot">312万</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 图片预览灯箱 -->
+  <div class="image-viewer" id="imageViewer">
+    <div class="viewer-backdrop" onclick="closeImageViewer()"></div>
+    <button class="viewer-close" onclick="closeImageViewer()" title="关闭">×</button>
+    <button class="viewer-nav viewer-prev" id="viewerPrev" onclick="navigateImage(-1)" title="上一张">‹</button>
+    <div class="viewer-content">
+      <img id="viewerImage" src="" alt="微博图片预览">
+    </div>
+    <button class="viewer-nav viewer-next" id="viewerNext" onclick="navigateImage(1)" title="下一张">›</button>
+    <div class="viewer-counter" id="viewerCounter"></div>
+  </div>
+
+  <script>
+    // 账号数据
+    const account = {
+      name: '赵安见',
+      id: 'zhaoanjian',
+      avatar: 'avatar.jpg',
+      gender: '男',
+      bio: '🤖 专注智能工程 · 人工智能 · 工业自动化 · 物联网 | 分享技术前沿与工程实践 | 合作交流请私信 ✉️',
+      location: '上海',
+      website: 'smart-engineering.cn',
+      joinDate: '2019年6月',
+      verified: '智能工程领域博主',
+      stats: { weibo: 328, following: 156, followers: '12.8万' }
+    };
+
+    // 微博内容数据
+    const weibos = [
+      {
+        id: 1,
+        content: '<span class="mention">@沈氏集团</span>，创造新能源基地，共创智能未来 🌱⚡<br><br>携手推进绿色能源与智能工程深度融合，打造新一代新能源产业基地，为可持续发展注入科技动力！<br><br><span class="topic">#新能源#</span> <span class="topic">#智能工程#</span> <span class="topic">#共创智能未来#</span>',
+        time: '2小时前',
+        source: '来自 iPhone 15 Pro',
+        imageList: ['1234.jpg', 'images/post1-1.jpg', 'images/post1-2.jpg', 'images/post1-3.jpg'],
+        likes: 2341,
+        comments: 156,
+        reposts: 89,
+        liked: false
+      },
+      {
+        id: 2,
+        content: '分享一篇关于「数字孪生技术在智能工厂中的应用」的技术笔记 📊<br>核心要点：① 虚实映射实现产线仿真 ② 预测性维护降低停机时间 ③ 工艺参数实时优化<br>数字孪生是智能工程的重要方向，值得深入研究！<br><br><span class="topic">#数字孪生#</span> <span class="topic">#智能工厂#</span>',
+        time: '昨天 21:30',
+        source: '来自 微博网页版',
+        imageList: ['images/post2-1.jpg', 'images/post2-2.jpg', 'images/post2-3.jpg', 'images/post2-4.jpg'],
+        likes: 4567,
+        comments: 312,
+        reposts: 234,
+        liked: true
+      },
+      {
+        id: 3,
+        content: '转发微博',
+        time: '3天前',
+        source: '来自 微博轻享版',
+        retweet: {
+          user: '中国自动化学会',
+          content: '【2025智能工程发展报告发布】报告显示，我国智能制造装备产业规模已突破3万亿元，工业机器人密度持续提升，AI+工业场景应用加速落地...'
+        },
+        imageList: [],
+        likes: 1892,
+        comments: 98,
+        reposts: 567,
+        liked: false
+      },
+      {
+        id: 4,
+        content: 'PLC + 机器视觉的联合调试终于跑通了！⚙️💻<br>项目场景：产线零件缺陷自动检测<br>方案：西门子 S7-1500 + Halcon 视觉库 + 深度学习分类模型<br>检测准确率 99.2%，节拍提升 40%<br><br><span class="topic">#工业自动化#</span> <span class="topic">#机器视觉#</span>',
+        time: '6月22日',
+        source: '来自 iPhone 15 Pro',
+        imageList: ['images/post4-1.jpg', 'images/post4-2.jpg'],
+        likes: 1567,
+        comments: 89,
+        reposts: 45,
+        liked: false
+      },
+      {
+        id: 5,
+        content: '刚参加完 <span class="mention">@中国人工智能学会</span> 举办的智能工程论坛，收获满满！🎤<br><br>几位院士分享了 AI 大模型在工业领域的落地思路，特别是边缘计算 + 大模型的轻量化部署方案，非常前沿。<br><br>下月将发布「智能工程实践」系列专栏，敬请期待！',
+        time: '6月18日',
+        source: '来自 微博网页版',
+        imageList: [],
+        likes: 3203,
+        comments: 234,
+        reposts: 178,
+        liked: false
+      },
+      {
+        id: 6,
+        content: '物联网平台架构设计分享 🌐<br>最近在做一套工业 IoT 数据采集与分析系统，架构如下：<br>① 边缘网关：Modbus/OPC UA 协议采集<br>② 消息队列：Kafka 实时数据流<br>③ 时序数据库：InfluxDB 存储<br>④ 可视化：Grafana 大屏监控<br><br>有做类似项目的朋友欢迎交流～<br><br><span class="topic">#工业物联网#</span> <span class="topic">#智能工程#</span> <span class="topic">#边缘计算#</span>',
+        time: '6月10日',
+        source: '来自 iPhone 15 Pro',
+        imageList: ['images/post6-1.jpg'],
+        likes: 5890,
+        comments: 423,
+        reposts: 890,
+        liked: true
+      }
+    ];
+
+    function formatNumber(num) {
+      if (num >= 10000) return (num / 10000).toFixed(1) + '万';
+      return num.toString();
+    }
+
+    function getWeiboImages(weiboId) {
+      const weibo = weibos.find(w => w.id === weiboId);
+      return weibo?.imageList || [];
+    }
+
+    let viewerState = { weiboId: null, index: 0, urls: [] };
+
+    function openImageViewer(weiboId, index) {
+      const urls = getWeiboImages(weiboId);
+      if (!urls.length) return;
+
+      viewerState = { weiboId, index, urls };
+
+      const viewer = document.getElementById('imageViewer');
+      viewer.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      updateViewerImage();
+    }
+
+    function closeImageViewer() {
+      document.getElementById('imageViewer').classList.remove('active');
+      document.body.style.overflow = '';
+      viewerState = { weiboId: null, index: 0, urls: [] };
+    }
+
+    function updateViewerImage() {
+      const { index, urls } = viewerState;
+      document.getElementById('viewerImage').src = urls[index];
+      document.getElementById('viewerCounter').textContent = `${index + 1} / ${urls.length}`;
+      document.getElementById('viewerPrev').disabled = index === 0;
+      document.getElementById('viewerNext').disabled = index === urls.length - 1;
+      document.getElementById('viewerPrev').style.display = urls.length > 1 ? 'block' : 'none';
+      document.getElementById('viewerNext').style.display = urls.length > 1 ? 'block' : 'none';
+      document.getElementById('viewerCounter').style.display = urls.length > 1 ? 'block' : 'none';
+    }
+
+    function navigateImage(direction) {
+      const newIndex = viewerState.index + direction;
+      if (newIndex < 0 || newIndex >= viewerState.urls.length) return;
+      viewerState.index = newIndex;
+      updateViewerImage();
+    }
+
+    document.addEventListener('keydown', (e) => {
+      const viewer = document.getElementById('imageViewer');
+      if (!viewer.classList.contains('active')) return;
+      if (e.key === 'Escape') closeImageViewer();
+      if (e.key === 'ArrowLeft') navigateImage(-1);
+      if (e.key === 'ArrowRight') navigateImage(1);
+    });
+
+    function renderImages(weiboId) {
+      const urls = getWeiboImages(weiboId);
+      const count = urls.length;
+      if (count === 0) return '';
+      const gridClass = count === 1 ? 'single' : count === 2 || count === 4 ? 'double' : '';
+      let html = `<div class="weibo-images ${gridClass}">`;
+      for (let i = 0; i < Math.min(count, 9); i++) {
+        html += `<button type="button" class="weibo-image img-${(i % 6) + 1}" onclick="openImageViewer(${weiboId}, ${i})" title="点击查看大图">
+          <img src="${urls[i]}" alt="微博图片 ${i + 1}">
+        </button>`;
+      }
+      html += '</div>';
+      return html;
+    }
+
+    function renderWeibos() {
+      const list = document.getElementById('weiboList');
+      list.innerHTML = weibos.map(w => `
+        <div class="weibo-item" data-id="${w.id}">
+          <div class="weibo-header">
+            <div class="weibo-avatar"><img src="${account.avatar}" alt="${account.name}"></div>
+            <div class="weibo-user-info">
+              <div class="weibo-username">${account.name}</div>
+              <div class="weibo-time">${w.time} · <span class="weibo-source">${w.source}</span></div>
+            </div>
+          </div>
+          <div class="weibo-content">${w.content}</div>
+          ${w.retweet ? `
+            <div class="weibo-retweet">
+              <div class="weibo-content">
+                <span class="weibo-retweet-user">@${w.retweet.user}</span>：${w.retweet.content}
+              </div>
+            </div>
+          ` : ''}
+          ${renderImages(w.id)}
+          <div class="weibo-actions">
+            <button class="action-btn" onclick="handleRepost(${w.id})">
+              <span class="action-icon">↗</span> 转发 ${w.reposts > 0 ? formatNumber(w.reposts) : ''}
+            </button>
+            <button class="action-btn" onclick="handleComment(${w.id})">
+              <span class="action-icon">💬</span> 评论 ${w.comments > 0 ? formatNumber(w.comments) : ''}
+            </button>
+            <button class="action-btn ${w.liked ? 'liked' : ''}" onclick="handleLike(${w.id})">
+              <span class="action-icon">${w.liked ? '❤️' : '🤍'}</span> 赞 ${w.likes > 0 ? formatNumber(w.likes) : ''}
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function handleLike(id) {
+      const w = weibos.find(item => item.id === id);
+      if (w) {
+        w.liked = !w.liked;
+        w.likes += w.liked ? 1 : -1;
+        renderWeibos();
+      }
+    }
+
+    function handleComment(id) {
+      alert('评论功能演示');
+    }
+
+    function handleRepost(id) {
+      alert('转发功能演示');
+    }
+
+    function toggleFollow() {
+      const btn = document.getElementById('followBtn');
+      if (btn.classList.contains('following')) {
+        btn.classList.remove('following');
+        btn.textContent = '+ 关注';
+      } else {
+        btn.classList.add('following');
+        btn.textContent = '已关注';
+      }
+    }
+
+    // 标签页切换
+    document.querySelectorAll('.tab-item').forEach(tab => {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    renderWeibos();
+  </script>
+</body>
+</html>

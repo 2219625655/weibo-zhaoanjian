@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a3a5c"/>
+      <stop offset="100%" stop-color="#0d2137"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="800" fill="url(#bg)"/>
+  <rect x="120" y="200" width="560" height="320" rx="8" fill="none" stroke="#4fc3f7" stroke-width="2" stroke-dasharray="8 4"/>
+  <rect x="160" y="260" width="200" height="120" rx="4" fill="#1565c0" opacity="0.6"/>
+  <rect x="400" y="260" width="200" height="120" rx="4" fill="#1565c0" opacity="0.4"/>
+  <rect x="280" y="420" width="240" height="60" rx="4" fill="#0277bd" opacity="0.5"/>
+  <circle cx="400" cy="500" r="40" fill="none" stroke="#81d4fa" stroke-width="2"/>
+  <text x="400" y="508" text-anchor="middle" font-size="28" fill="#81d4fa" font-family="PingFang SC, Microsoft YaHei, sans-serif">pWj</text>
+  <text x="400" y="620" text-anchor="middle" font-size="32" fill="#e3f2fd" font-family="PingFang SC, Microsoft YaHei, sans-serif">zýå‚§¿ÿ</text>
+</svg>
